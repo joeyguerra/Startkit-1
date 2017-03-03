@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thoughtworks.android.startkit.book.Book;
 import com.thoughtworks.android.startkit.book.Data;
 import com.thoughtworks.android.startkit.book.ImageLoader;
@@ -92,18 +93,14 @@ public class BooklistFragment extends Fragment {
             holder.ratingBar.setRating((float) (data.getRating() / 2));
             holder.ratingVal.setText(String.valueOf(data.getRating()));
 
-            holder.image.setTag(data.getImage());
 
-            new ImageLoaderTask(data.getImage()) {
-
-                @Override
-                protected void onPostExecute(Bitmap bitmap) {
-                    super.onPostExecute(bitmap);
-                    if (holder.image.getTag().equals(mUrl)) {
-                        holder.image.setImageBitmap(bitmap);
-                    }
-                }
-            }.execute();
+            Glide
+                .with(getContext())
+                .load(data.getImage())
+                .centerCrop()
+                .placeholder(R.drawable.ic_default_cover)
+                .crossFade()
+                .into(holder.image);
 
             return convertView;
         }
@@ -115,20 +112,6 @@ public class BooklistFragment extends Fragment {
             ImageView image;
             RatingBar ratingBar;
             TextView ratingVal;
-        }
-    }
-
-    static class ImageLoaderTask extends AsyncTask<Void, Void, Bitmap> {
-
-        final String mUrl;
-
-        ImageLoaderTask(String url) {
-            this.mUrl = url;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            return ImageLoader.loadBitmap(mUrl);
         }
     }
 
