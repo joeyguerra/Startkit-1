@@ -2,6 +2,7 @@ package com.thoughtworks.android.startkit;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.thoughtworks.android.startkit.book.Book;
 import com.thoughtworks.android.startkit.book.Data;
+import com.thoughtworks.android.startkit.book.ImageLoader;
 
 import java.util.List;
 
@@ -87,7 +89,21 @@ public class BooklistFragment extends Fragment {
             holder.information.setText(data.getInformation());
             holder.ratingBar.setRating((float) (data.getRating() / 2));
             holder.ratingVal.setText(String.valueOf(data.getRating()));
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_default_cover));
+
+            new AsyncTask<String, Void, Bitmap>() {
+
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    return ImageLoader.loadBitmap(params[0]);
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    super.onPostExecute(bitmap);
+                    holder.image.setImageBitmap(bitmap);
+                }
+            }.execute(data.getImage());
+
             return convertView;
         }
 
