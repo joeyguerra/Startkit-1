@@ -23,7 +23,7 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private static final String DATA_URL = "https://api.douban.com/v2/book/search?tag=%s&count=%d&start=%d";
     private static final String DATA_TAG = "IT";
-    private static final int DATA_PER_PAGE = 40;
+    private static final int DATA_PER_PAGE = 20;
     private static final int DATA_INITIAL_START = 0;
 
     private RecyclerView mListView;

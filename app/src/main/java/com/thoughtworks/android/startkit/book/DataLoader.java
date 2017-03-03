@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -14,19 +16,24 @@ public class DataLoader {
 
     public static final JSONObject loadJSONData(final String urlString) {
         StringBuilder contentBuilder = new StringBuilder();
+        String line = null;
+
 
         try {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            connection.setRequestMethod("GET");
+            connection.setReadTimeout(15000);
+            connection.setConnectTimeout(15000);
+            connection.connect();
 
-            byte[] buffer = new byte[1024];
+            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-            while (inputStream.read(buffer) != -1) {
-                contentBuilder.append(new String(buffer, "UTF-8"));
+            while ((line = rd.readLine()) != null) {
+                contentBuilder.append(line);
             }
 
-            inputStream.close();
+            rd.close();
             connection.disconnect();
             return new JSONObject(contentBuilder.toString());
         } catch (Exception e) {
