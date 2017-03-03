@@ -55,6 +55,10 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
         return mBooks.size();
     }
 
+    public void clearAll() {
+        mBooks.clear();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
