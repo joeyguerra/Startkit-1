@@ -3,6 +3,7 @@ package com.thoughtworks.android.startkit;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,8 +47,9 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         // in content do not change the layout size of the RecyclerView
         mListView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        final int columns = getResources().getInteger(R.integer.gallery_columns);
+        mLayoutManager = new GridLayoutManager(getContext(), columns);
         mListView.setLayoutManager(mLayoutManager);
 
         mAdapter = new BooklistAdapter();
