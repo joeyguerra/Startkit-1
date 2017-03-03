@@ -11,14 +11,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.thoughtworks.android.startkit.book.Book;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
 
-    private List<Book> mBooks;
+    private List<Book> mBooks = new ArrayList<>();
 
-    BooklistAdapter(List<Book> books) {
-        mBooks = books;
+    public void addAll(List<Book> newBooks) {
+        mBooks.addAll(newBooks);
+        notifyDataSetChanged();
     }
 
     @Override
