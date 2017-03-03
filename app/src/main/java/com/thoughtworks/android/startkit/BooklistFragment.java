@@ -37,11 +37,11 @@ public class BooklistFragment extends Fragment {
         listView.setLayoutManager(mLayoutManager);
 
 
-        new AsyncTask<Void, Void, Data>() {
+        new AsyncTask<String, Void, Data>() {
 
             @Override
-            protected Data doInBackground(Void... params) {
-                return from(loadJSONData(getContext()));
+            protected Data doInBackground(String... params) {
+                return from(loadJSONData(params[0]));
             }
 
             @Override
@@ -52,7 +52,7 @@ public class BooklistFragment extends Fragment {
                 mAdapter = new BooklistAdapter(data.getBookArray());
                 listView.setAdapter(mAdapter);
             }
-        }.execute();
+        }.execute("https://api.douban.com/v2/book/search?tag=IT");
 
         return view;
     }
