@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.thoughtworks.android.startkit.book.Book;
 import com.thoughtworks.android.startkit.book.Data;
 import com.thoughtworks.android.startkit.book.ImageLoader;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static com.thoughtworks.android.startkit.book.Data.from;
@@ -90,19 +92,18 @@ public class BooklistFragment extends Fragment {
             holder.ratingBar.setRating((float) (data.getRating() / 2));
             holder.ratingVal.setText(String.valueOf(data.getRating()));
 
-            new AsyncTask<String, Void, Bitmap>() {
+            holder.image.setTag(data.getImage());
 
-                @Override
-                protected Bitmap doInBackground(String... params) {
-                    return ImageLoader.loadBitmap(params[0]);
-                }
+            new ImageLoaderTask(data.getImage()) {
 
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
                     super.onPostExecute(bitmap);
-                    holder.image.setImageBitmap(bitmap);
+                    if (holder.image.getTag().equals(mUrl)) {
+                        holder.image.setImageBitmap(bitmap);
+                    }
                 }
-            }.execute(data.getImage());
+            }.execute();
 
             return convertView;
         }
@@ -114,6 +115,20 @@ public class BooklistFragment extends Fragment {
             ImageView image;
             RatingBar ratingBar;
             TextView ratingVal;
+        }
+    }
+
+    static class ImageLoaderTask extends AsyncTask<Void, Void, Bitmap> {
+
+        final String mUrl;
+
+        ImageLoaderTask(String url) {
+            this.mUrl = url;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            return ImageLoader.loadBitmap(mUrl);
         }
     }
 
