@@ -9,7 +9,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.thoughtworks.android.startkit.book.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,9 @@ import butterknife.ButterKnife;
 
 public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
 
-    private List<Book> mBooks = new ArrayList<>();
+    private List<BookItem> mBooks = new ArrayList<>();
 
-    public void addAll(List<Book> newBooks) {
+    public void addAll(List<BookItem> newBooks) {
         mBooks.addAll(newBooks);
         notifyDataSetChanged();
     }
@@ -35,7 +34,7 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Book data = mBooks.get(position);
+        final BookItem data = mBooks.get(position);
 
         holder.title.setText(data.getTitle());
         holder.summary.setText(data.getSummary());
