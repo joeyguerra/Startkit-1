@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import com.thoughtworks.android.startkit.book.Data;
 import com.thoughtworks.android.startkit.book.LoadDataTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.util.Locale.ENGLISH;
@@ -27,12 +30,18 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
     private static final int DATA_PER_PAGE = 20;
     private static final int DATA_INITIAL_START = 0;
 
-    private RecyclerView mListView;
-    private BooklistAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    @BindView(android.R.id.list)
+    RecyclerView mListView;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private View loadingView;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.view_loading_more)
+    View loadingView;
+
+    private BooklistAdapter mAdapter;
+
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private boolean isLoading;
     private boolean hasMoreItems;
@@ -40,9 +49,8 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        ButterKnife.bind(this,view);
 
-
-        mListView = (RecyclerView) view.findViewById(android.R.id.list);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mListView.setHasFixedSize(true);
@@ -55,9 +63,6 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         mAdapter = new BooklistAdapter();
         mListView.setAdapter(mAdapter);
 
-        loadingView = view.findViewById(R.id.view_loading_more);
-
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_light,

@@ -14,6 +14,9 @@ import com.thoughtworks.android.startkit.book.Book;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
 
     private List<Book> mBooks = new ArrayList<>();
@@ -61,21 +64,22 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title;
-        public TextView information;
-        public TextView summary;
-        public ImageView image;
-        public RatingBar ratingBar;
-        public TextView ratingVal;
+        @BindView(R.id.title)
+        TextView title;
+        @BindView(R.id.information)
+        TextView information;
+        @BindView(R.id.summary)
+        TextView summary;
+        @BindView(R.id.thumbnail)
+        ImageView image;
+        @BindView(R.id.rating)
+        RatingBar ratingBar;
+        @BindView(R.id.ratingValue)
+        TextView ratingVal;
 
         public ViewHolder(View v) {
             super(v);
-            title = (TextView) v.findViewById(R.id.title);
-            information = (TextView) v.findViewById(R.id.information);
-            summary = (TextView) v.findViewById(R.id.summary);
-            image = (ImageView) v.findViewById(R.id.thumbnail);
-            ratingBar = (RatingBar) v.findViewById(R.id.rating);
-            ratingVal = (TextView) v.findViewById(R.id.ratingValue);
+            ButterKnife.bind(this,v);
         }
     }
 }
