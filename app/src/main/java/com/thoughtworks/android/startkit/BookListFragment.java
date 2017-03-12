@@ -18,9 +18,9 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.util.Locale.ENGLISH;
 
-public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "BooklistFragment";
+    private static final String TAG = "BookListFragment";
 
     private static final String DATA_URL = "https://api.douban.com/v2/book/search?tag=%s&count=%d&start=%d";
     private static final String DATA_TAG = "IT";
@@ -43,8 +43,6 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         mListView = (RecyclerView) view.findViewById(android.R.id.list);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         mListView.setHasFixedSize(true);
 
 
@@ -142,7 +140,6 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 mAdapter.addAll(data.getBookArray());
             }
         }.execute(getDataUrl(mAdapter.getItemCount()));
-
     }
 
     private void showLoadingMore() {
