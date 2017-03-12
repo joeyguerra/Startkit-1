@@ -36,16 +36,16 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         final BookItem data = mBooks.get(position);
 
-        holder.title.setText(data.getTitle());
-        holder.summary.setText(data.getSummary());
+        holder.title.setText(data.getItemTitle());
+        holder.summary.setText(data.getItemSummary());
         holder.information.setText(data.getInformation());
-        holder.ratingBar.setRating((float) (data.getRating() / 2));
-        holder.ratingVal.setText(String.valueOf(data.getRating()));
+        holder.ratingBar.setRating((float) (data.getItemRating() / 2));
+        holder.ratingVal.setText(String.valueOf(data.getItemRating()));
 
 
         Glide
                 .with(StartkitApplication.getApplication())
-                .load(data.getImage())
+                .load(data.getItemImage())
                 .centerCrop()
                 .placeholder(R.drawable.ic_default_cover)
                 .crossFade()
@@ -60,6 +60,8 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
     public void clearAll() {
         mBooks.clear();
     }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

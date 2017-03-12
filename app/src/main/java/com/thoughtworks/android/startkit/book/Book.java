@@ -21,32 +21,32 @@ public class Book extends BookItem {
         this.rating = rating;
     }
 
-    public String getTitle() {
+    public String getItemTitle() {
         return title;
     }
 
-    public String getImage() {
+    public String getItemImage() {
         return image;
     }
 
-    public String getSummary() {
+    public String getItemSummary() {
         return summary;
     }
 
 
-    public String getAuthor() {
+    public String getItemAuthor() {
         return author;
     }
 
-    public String getPublisher() {
+    public String getItemPublisher() {
         return publisher;
     }
 
-    public String getPublishDate() {
+    public String getItemPublishDate() {
         return publishDate;
     }
 
-    public double getRating() {
+    public double getItemRating() {
         return rating;
     }
 }

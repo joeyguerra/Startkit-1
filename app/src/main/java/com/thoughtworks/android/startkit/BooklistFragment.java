@@ -11,24 +11,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.thoughtworks.android.startkit.book.Data;
-import com.thoughtworks.android.startkit.book.LoadDataTask;
+import com.thoughtworks.android.startkit.retrofit.DouBanResponseData;
+import com.thoughtworks.android.startkit.retrofit.DouBanDataTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static java.util.Locale.ENGLISH;
 
 public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "BooklistFragment";
+    int DATA_INITIAL_START = 0;
 
-    private static final String DATA_URL = "https://api.douban.com/v2/book/search?tag=%s&count=%d&start=%d";
-    private static final String DATA_TAG = "IT";
-    private static final int DATA_PER_PAGE = 20;
-    private static final int DATA_INITIAL_START = 0;
 
     @BindView(android.R.id.list)
     RecyclerView mListView;
@@ -92,17 +88,13 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         return view;
     }
 
-    private String getDataUrl(int start) {
-        return String.format(ENGLISH, DATA_URL, DATA_TAG, DATA_PER_PAGE, start);
-    }
-
     @Override
     public void onRefresh() {
         doRefreshData();
     }
 
     private void doRefreshData() {
-        new LoadDataTask() {
+        new DouBanDataTask() {
 
             @Override
             protected void onPreExecute() {
@@ -114,7 +106,7 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            protected void onPostExecute(Data data) {
+            protected void onPostExecute(BookData data) {
                 super.onPostExecute(data);
                 isLoading = false;
                 if (swipeRefreshLayout.isRefreshing()) {
@@ -122,15 +114,15 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
                 hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
                 mAdapter.clearAll();
-                mAdapter.addAll(data.getBookArray());
+                mAdapter.addAll(data.getBooks());
             }
-        }.execute(getDataUrl(DATA_INITIAL_START));
+        }.execute(DATA_INITIAL_START);
     }
 
     private void doLoadMoreData() {
         Log.d(TAG, "load more data for ListView");
 
-        new LoadDataTask() {
+        new DouBanDataTask() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -139,14 +131,14 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            protected void onPostExecute(Data data) {
+            protected void onPostExecute(BookData data) {
                 super.onPostExecute(data);
                 isLoading = false;
                 hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
                 hideLoadingMore();
-                mAdapter.addAll(data.getBookArray());
+                mAdapter.addAll(data.getBooks());
             }
-        }.execute(getDataUrl(mAdapter.getItemCount()));
+        }.execute(mAdapter.getItemCount());
 
     }
 

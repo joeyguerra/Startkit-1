@@ -8,21 +8,21 @@ import android.text.TextUtils;
 
 public abstract class BookItem {
 
-    public abstract String getTitle();
+    public abstract String getItemTitle();
 
-    public abstract String getSummary();
+    public abstract String getItemSummary();
 
-    public abstract double getRating();
+    public abstract double getItemRating();
 
-    public abstract String getImage();
+    public abstract String getItemImage();
 
-    public abstract String getAuthor();
+    public abstract String getItemAuthor();
 
-    public abstract String getPublisher();
+    public abstract String getItemPublisher();
 
-    public abstract String getPublishDate();
+    public abstract String getItemPublishDate();
 
     public String getInformation() {
-        return TextUtils.join(" / ", new String[]{getAuthor(), getPublisher(), getPublishDate()});
+        return TextUtils.join(" / ", new String[]{getItemAuthor(), getItemPublisher(), getItemPublishDate()});
     }
 }
