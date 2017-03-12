@@ -14,7 +14,7 @@ import com.thoughtworks.android.startkit.book.Book;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
+public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> {
 
     private List<Book> mBooks = new ArrayList<>();
 

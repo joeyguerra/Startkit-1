@@ -28,7 +28,7 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
     private static final int DATA_INITIAL_START = 0;
 
     private RecyclerView mListView;
-    private BooklistAdapter mAdapter;
+    private BookListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -52,7 +52,7 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         mLayoutManager = new GridLayoutManager(getContext(), columns);
         mListView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new BooklistAdapter();
+        mAdapter = new BookListAdapter();
         mListView.setAdapter(mAdapter);
 
         loadingView = view.findViewById(R.id.view_loading_more);
