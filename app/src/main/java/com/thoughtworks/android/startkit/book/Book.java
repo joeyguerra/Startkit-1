@@ -1,8 +1,8 @@
 package com.thoughtworks.android.startkit.book;
 
-import android.text.TextUtils;
+import com.thoughtworks.android.startkit.BookItem;
 
-public class Book {
+public class Book extends BookItem {
     private String title;
     private String image;
     private String author;
@@ -21,35 +21,32 @@ public class Book {
         this.rating = rating;
     }
 
-    public String getTitle() {
+    public String getItemTitle() {
         return title;
     }
 
-    public String getImage() {
+    public String getItemImage() {
         return image;
     }
 
-    public String getSummary() {
+    public String getItemSummary() {
         return summary;
     }
 
-    public String getInformation() {
-        return TextUtils.join(" / ", new String[]{getAuthor(), getPublisher(), getPublishDate()});
-    }
 
-    public String getAuthor() {
+    public String getItemAuthor() {
         return author;
     }
 
-    public String getPublisher() {
+    public String getItemPublisher() {
         return publisher;
     }
 
-    public String getPublishDate() {
+    public String getItemPublishDate() {
         return publishDate;
     }
 
-    public double getRating() {
+    public double getItemRating() {
         return rating;
     }
 }

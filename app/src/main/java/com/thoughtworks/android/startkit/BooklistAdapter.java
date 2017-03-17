@@ -9,16 +9,18 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.thoughtworks.android.startkit.book.Book;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
 
-    private List<Book> mBooks = new ArrayList<>();
+    private List<BookItem> mBooks = new ArrayList<>();
 
-    public void addAll(List<Book> newBooks) {
+    public void addAll(List<BookItem> newBooks) {
         mBooks.addAll(newBooks);
         notifyDataSetChanged();
     }
@@ -32,18 +34,18 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Book data = mBooks.get(position);
+        final BookItem data = mBooks.get(position);
 
-        holder.title.setText(data.getTitle());
-        holder.summary.setText(data.getSummary());
+        holder.title.setText(data.getItemTitle());
+        holder.summary.setText(data.getItemSummary());
         holder.information.setText(data.getInformation());
-        holder.ratingBar.setRating((float) (data.getRating() / 2));
-        holder.ratingVal.setText(String.valueOf(data.getRating()));
+        holder.ratingBar.setRating((float) (data.getItemRating() / 2));
+        holder.ratingVal.setText(String.valueOf(data.getItemRating()));
 
 
         Glide
                 .with(StartkitApplication.getApplication())
-                .load(data.getImage())
+                .load(data.getItemImage())
                 .centerCrop()
                 .placeholder(R.drawable.ic_default_cover)
                 .crossFade()
@@ -59,23 +61,26 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
         mBooks.clear();
     }
 
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title;
-        public TextView information;
-        public TextView summary;
-        public ImageView image;
-        public RatingBar ratingBar;
-        public TextView ratingVal;
+        @BindView(R.id.title)
+        TextView title;
+        @BindView(R.id.information)
+        TextView information;
+        @BindView(R.id.summary)
+        TextView summary;
+        @BindView(R.id.thumbnail)
+        ImageView image;
+        @BindView(R.id.rating)
+        RatingBar ratingBar;
+        @BindView(R.id.ratingValue)
+        TextView ratingVal;
 
         public ViewHolder(View v) {
             super(v);
-            title = (TextView) v.findViewById(R.id.title);
-            information = (TextView) v.findViewById(R.id.information);
-            summary = (TextView) v.findViewById(R.id.summary);
-            image = (ImageView) v.findViewById(R.id.thumbnail);
-            ratingBar = (RatingBar) v.findViewById(R.id.rating);
-            ratingVal = (TextView) v.findViewById(R.id.ratingValue);
+            ButterKnife.bind(this,v);
         }
     }
 }

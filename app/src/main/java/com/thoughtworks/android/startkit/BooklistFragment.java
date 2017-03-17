@@ -11,28 +11,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.thoughtworks.android.startkit.book.Data;
-import com.thoughtworks.android.startkit.book.LoadDataTask;
+import com.thoughtworks.android.startkit.retrofit.DouBanResponseData;
+import com.thoughtworks.android.startkit.retrofit.DouBanDataTask;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static java.util.Locale.ENGLISH;
 
 public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "BooklistFragment";
+    int DATA_INITIAL_START = 0;
 
-    private static final String DATA_URL = "https://api.douban.com/v2/book/search?tag=%s&count=%d&start=%d";
-    private static final String DATA_TAG = "IT";
-    private static final int DATA_PER_PAGE = 20;
-    private static final int DATA_INITIAL_START = 0;
 
-    private RecyclerView mListView;
+    @BindView(android.R.id.list)
+    RecyclerView mListView;
+
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.view_loading_more)
+    View loadingView;
+
     private BooklistAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private View loadingView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private boolean isLoading;
     private boolean hasMoreItems;
@@ -40,9 +45,8 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        ButterKnife.bind(this,view);
 
-
-        mListView = (RecyclerView) view.findViewById(android.R.id.list);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mListView.setHasFixedSize(true);
@@ -55,9 +59,6 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         mAdapter = new BooklistAdapter();
         mListView.setAdapter(mAdapter);
 
-        loadingView = view.findViewById(R.id.view_loading_more);
-
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_light,
@@ -87,17 +88,13 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
         return view;
     }
 
-    private String getDataUrl(int start) {
-        return String.format(ENGLISH, DATA_URL, DATA_TAG, DATA_PER_PAGE, start);
-    }
-
     @Override
     public void onRefresh() {
         doRefreshData();
     }
 
     private void doRefreshData() {
-        new LoadDataTask() {
+        new DouBanDataTask() {
 
             @Override
             protected void onPreExecute() {
@@ -109,7 +106,7 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            protected void onPostExecute(Data data) {
+            protected void onPostExecute(BookData data) {
                 super.onPostExecute(data);
                 isLoading = false;
                 if (swipeRefreshLayout.isRefreshing()) {
@@ -117,15 +114,15 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
                 hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
                 mAdapter.clearAll();
-                mAdapter.addAll(data.getBookArray());
+                mAdapter.addAll(data.getBooks());
             }
-        }.execute(getDataUrl(DATA_INITIAL_START));
+        }.execute(DATA_INITIAL_START);
     }
 
     private void doLoadMoreData() {
         Log.d(TAG, "load more data for ListView");
 
-        new LoadDataTask() {
+        new DouBanDataTask() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -134,14 +131,14 @@ public class BooklistFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            protected void onPostExecute(Data data) {
+            protected void onPostExecute(BookData data) {
                 super.onPostExecute(data);
                 isLoading = false;
                 hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
                 hideLoadingMore();
-                mAdapter.addAll(data.getBookArray());
+                mAdapter.addAll(data.getBooks());
             }
-        }.execute(getDataUrl(mAdapter.getItemCount()));
+        }.execute(mAdapter.getItemCount());
 
     }
 
