@@ -1,5 +1,7 @@
 package com.thoughtworks.android.startkit;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Book data = mBooks.get(position);
 
         holder.title.setText(data.getTitle());
@@ -48,6 +50,16 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
                 .placeholder(R.drawable.ic_default_cover)
                 .crossFade()
                 .into(holder.image);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, BookDetailActivity.class);
+                intent.putExtra("BOOK", mBooks.get(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

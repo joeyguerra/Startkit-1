@@ -1,8 +1,10 @@
 package com.thoughtworks.android.startkit.book;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
-public class Book {
+public class Book implements Parcelable{
     private String title;
     private String image;
     private String author;
@@ -20,6 +22,28 @@ public class Book {
         this.summary = summary;
         this.rating = rating;
     }
+
+    protected Book(Parcel in) {
+        title = in.readString();
+        image = in.readString();
+        author = in.readString();
+        publisher = in.readString();
+        publishDate = in.readString();
+        summary = in.readString();
+        rating = in.readDouble();
+    }
+
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -51,5 +75,21 @@ public class Book {
 
     public double getRating() {
         return rating;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(image);
+        dest.writeString(author);
+        dest.writeString(publisher);
+        dest.writeString(publishDate);
+        dest.writeString(summary);
+        dest.writeDouble(rating);
     }
 }

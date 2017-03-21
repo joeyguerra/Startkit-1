@@ -6,26 +6,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.thoughtworks.android.startkit.book.Data;
-import com.thoughtworks.android.startkit.book.LoadDataTask;
+import com.thoughtworks.android.startkit.book.Book;
+
+import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static java.util.Locale.ENGLISH;
 
-public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    private static final String TAG = "BookListFragment";
-
-    private static final String DATA_URL = "https://api.douban.com/v2/book/search?tag=%s&count=%d&start=%d";
-    private static final String DATA_TAG = "IT";
-    private static final int DATA_PER_PAGE = 20;
-    private static final int DATA_INITIAL_START = 0;
+public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, BookListView{
 
     private RecyclerView mListView;
     private BookListAdapter mAdapter;
@@ -34,11 +26,13 @@ public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private SwipeRefreshLayout swipeRefreshLayout;
     private View loadingView;
 
-    private boolean isLoading;
-    private boolean hasMoreItems;
+    private BookListPresenter presenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        presenter = new BookListPresenter(this);
+
+
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
 
 
@@ -71,82 +65,54 @@ public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnR
                 int totalItemCount = mLayoutManager.getItemCount();
                 int firstVisibleItem = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
 
-                if (totalItemCount > 0) {
-                    int lastVisibleItem = firstVisibleItem + visibleItemCount;
-                    if (!isLoading && hasMoreItems && (lastVisibleItem == totalItemCount)) {
-                        doLoadMoreData();
-                    }
-                }
+                presenter.loadMore(visibleItemCount, totalItemCount, firstVisibleItem);
             }
         });
 
-        doRefreshData();
+        presenter.refreshData();
 
         return view;
     }
 
-    private String getDataUrl(int start) {
-        return String.format(ENGLISH, DATA_URL, DATA_TAG, DATA_PER_PAGE, start);
-    }
-
     @Override
     public void onRefresh() {
-        doRefreshData();
+        presenter.refreshData();
+
     }
 
-    private void doRefreshData() {
-        new LoadDataTask() {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                isLoading = true;
-                if (!swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(true);
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Data data) {
-                super.onPostExecute(data);
-                isLoading = false;
-                if (swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
-                mAdapter.clearAll();
-                mAdapter.addAll(data.getBookArray());
-            }
-        }.execute(getDataUrl(DATA_INITIAL_START));
-    }
-
-    private void doLoadMoreData() {
-        Log.d(TAG, "load more data for ListView");
-
-        new LoadDataTask() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                showLoadingMore();
-                isLoading = true;
-            }
-
-            @Override
-            protected void onPostExecute(Data data) {
-                super.onPostExecute(data);
-                isLoading = false;
-                hasMoreItems = data.getTotal() - (data.getStart() + data.getCount()) > 0;
-                hideLoadingMore();
-                mAdapter.addAll(data.getBookArray());
-            }
-        }.execute(getDataUrl(mAdapter.getItemCount()));
-    }
-
-    private void showLoadingMore() {
+    public void showLoadingMore() {
         loadingView.setVisibility(VISIBLE);
     }
 
-    private void hideLoadingMore() {
+    public void hideLoadingMore() {
         loadingView.setVisibility(GONE);
+    }
+
+    @Override
+    public void loadMoreData(List<Book> bookArray) {
+        mAdapter.addAll(bookArray);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mAdapter.getItemCount();
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        if (swipeRefreshLayout.isRefreshing() != refreshing) {
+            swipeRefreshLayout.setRefreshing(refreshing);
+        }
+    }
+
+    @Override
+    public void loadData(List<Book> bookArray) {
+        mAdapter.clearAll();
+        mAdapter.addAll(bookArray);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
     }
 }
