@@ -1,12 +1,13 @@
 package com.thoughtworks.android.startkit;
 
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 /**
  * Created by zhuang on 12/03/2017.
  */
 
-public abstract class BookItem {
+public abstract class BookItem implements Parcelable{
 
     public abstract String getItemTitle();
 

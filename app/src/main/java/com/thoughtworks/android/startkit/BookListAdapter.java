@@ -1,5 +1,8 @@
 package com.thoughtworks.android.startkit;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHolder> {
+public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> {
 
     private List<BookItem> mBooks = new ArrayList<>();
 
@@ -32,8 +35,7 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final BookItem data = mBooks.get(position);
 
         holder.title.setText(data.getItemTitle());
@@ -50,6 +52,16 @@ public class BooklistAdapter extends RecyclerView.Adapter<BooklistAdapter.ViewHo
                 .placeholder(R.drawable.ic_default_cover)
                 .crossFade()
                 .into(holder.image);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, BookDetailActivity.class);
+                intent.putExtra("BOOK", mBooks.get(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
