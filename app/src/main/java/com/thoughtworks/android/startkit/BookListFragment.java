@@ -1,15 +1,19 @@
 package com.thoughtworks.android.startkit;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
+import com.thoughtworks.android.startkit.presenter.BookListPresenter;
 
 import java.util.List;
 
@@ -20,6 +24,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, BookListView {
+
+    private static final String TAG = "BookListFragment";
 
     @BindView(android.R.id.list)
     RecyclerView mListView;
@@ -35,7 +41,29 @@ public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private BookListPresenter presenter;
 
     @Override
+    public void onAttach(Context context) {
+        Log.d(TAG, "onAttach");
+        super.onAttach(context);
+        presenter = new BookListPresenter();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(TAG, "onDetach");
+        super.onDetach();
+        presenter = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView");
+        super.onDestroyView();
+        presenter.onDropView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
         ButterKnife.bind(this, view);
 
@@ -67,7 +95,7 @@ public class BookListFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        presenter = new BookListPresenter(this);
+        presenter.onTakeView(this);
         presenter.refreshData();
 
         return view;

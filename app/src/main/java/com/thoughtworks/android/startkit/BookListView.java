@@ -2,7 +2,7 @@ package com.thoughtworks.android.startkit;
 
 import java.util.List;
 
-interface BookListView {
+public interface BookListView extends BaseView{
     void setRefreshing(boolean refreshing);
 
     void loadData(List<BookItem> bookArray);
