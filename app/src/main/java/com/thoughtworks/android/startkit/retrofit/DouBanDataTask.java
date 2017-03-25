@@ -52,6 +52,11 @@ public class DouBanDataTask extends AsyncTask<Integer, Void, BookData> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

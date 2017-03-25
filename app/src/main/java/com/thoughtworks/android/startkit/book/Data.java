@@ -1,5 +1,7 @@
 package com.thoughtworks.android.startkit.book;
 
+import com.thoughtworks.android.startkit.BookItem;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,9 +34,9 @@ public class Data {
         return mJSONObject.optInt(TOTAL);
     }
 
-    public List<Book> getBookArray() {
+    public List<BookItem> getBookArray() {
         JSONArray array = mJSONObject.optJSONArray(BOOKS);
-        List<Book> books = new ArrayList<>(array.length());
+        List<BookItem> books = new ArrayList<>(array.length());
 
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = (JSONObject) array.opt(i);
